@@ -23,5 +23,16 @@ mod utils;
 
 
 fn main() {
+    //TODO:
+    //load_config()
+    //get_input_flags()
+    //overwrite some configs temporarily with input flags
+    //help     -> helptext
+    //(allow swithing different tabs for each:)
+    //anime    (_) -> anime online browse tui (default screen)
+    //config   (c) -> settings menu tui
+    //seasonal (s) -> seasonal anime update tui
+    //files    (f) -> browse downloaded anime tui
+    //tuihelp  (h) -> tui shortcuts details
     println!(" {}","Hello, world!".blue().bold());
 }
