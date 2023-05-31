@@ -21,7 +21,7 @@ pub use crossterm::{
     execute,
 };
 pub use tui::{
-    text::Spans,
+    text::{Spans, Span},
     backend::CrosstermBackend,
     layout::{Constraint, Direction, Layout},
     style::{Color, Modifier, Style},
@@ -75,9 +75,10 @@ fn handle_input(event: Event, current_tab: &mut usize, tabs_count: usize) {
             }
             KeyCode::Char(y) => {
                 *current_tab = match y {
-                    'a' => 0usize,
-                    's' => 1usize,
-                    'f' => 2usize,
+                    'a' => 0,
+                    's' => 1,
+                    'n' => 2,
+                    'c' => 3,
                     _ => *current_tab,
                 }
             },
@@ -85,6 +86,29 @@ fn handle_input(event: Event, current_tab: &mut usize, tabs_count: usize) {
             _ => {}
         }
     }
+}
+
+fn separator(input: &str, separator: char) -> Vec<String> {
+    let mut result = Vec::new();
+    let mut current = String::new();
+
+    for c in input.chars() {
+        if c == separator {
+            if !current.is_empty() {
+                result.push(current.clone());
+                current.clear();
+            }
+            result.push(c.to_string());
+        } else {
+            current.push(c);
+        }
+    }
+
+    if !current.is_empty() {
+        result.push(current);
+    }
+
+    result
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -100,7 +124,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut terminal = Terminal::new(backend)?;
 
     // Set up the TUI application loop
-    let mut tabs = vec!["Anime Search", "Seasonal", "Files"];
+    let mut tabs = vec![("Anime",'A'), ("Search",'S'), ("Seasonal",'n'), ("Config",'C')];
     let mut current_tab = 0;
 
     loop {
@@ -112,9 +136,41 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 .split(f.size());
 
             // Render the tabs
-            let tabs_widget = Tabs::new(tabs.iter().cloned().map(Spans::from).collect())
+            let tabs = tabs
+                .iter()
+                .cloned()
+                .map(|t| {
+                    let words:Vec<String> = separator(t.0, t.1);
+                    // dbg!(&words);
+                    let start:String;
+                    let c:String;
+                    let rest:String;
+                    if words.len() == 2 {
+                        start = "".to_owned();
+                        c = words[0].to_owned();
+                        rest = words[1].to_owned();
+                    }else{
+                        start = words[0].to_owned();
+                        c = words[1].to_owned();
+                        rest = words[2].to_owned();
+                    }
+                    Spans::from(vec![
+                        Span::styled(start, Style::default().fg(Color::White)),
+                        Span::styled(
+                            c,
+                            Style::default()
+                                .fg(Color::Blue)
+                                .add_modifier(Modifier::UNDERLINED)
+                                .add_modifier(Modifier::BOLD),
+                        ),
+                        Span::styled(rest, Style::default().fg(Color::White)),
+                    ])
+                })
+                .collect();
+                
+            let tabs_widget = Tabs::new(tabs)
                 .select(current_tab)
-                .highlight_style(Style::default().fg(Color::Yellow))
+                .highlight_style(Style::default().fg(Color::Blue))
                 .block(Block::default().borders(Borders::ALL).title("Tabs"));
             f.render_widget(tabs_widget, chunks[0]);
 
