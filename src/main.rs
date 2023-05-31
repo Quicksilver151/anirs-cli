@@ -18,6 +18,7 @@ pub use crossterm::{
         EnterAlternateScreen,
         LeaveAlternateScreen,
     },
+    execute,
 };
 pub use tui::{
     text::Spans,
@@ -86,7 +87,7 @@ fn handle_input(event: Event, current_tab: &mut usize, tabs_count: usize) {
     }
 }
 
-fn main() -> Result<()> {
+fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Create a terminal and enable raw mode
     enable_raw_mode()?;
     execute!(
