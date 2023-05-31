@@ -1,14 +1,34 @@
 //START
 
 //stds:
-
+use std::io;
+use io::{stdout, Write};
 
 //crates:
-pub use tui::*;
-pub use crossterm::*;
+pub use crossterm::{
+    event::{self, 
+        Event, 
+        KeyCode, 
+        EnableMouseCapture, 
+        DisableMouseCapture,
+    },
+    terminal::{
+        disable_raw_mode,
+        enable_raw_mode,
+        EnterAlternateScreen,
+        LeaveAlternateScreen,
+    },
+};
+pub use tui::{
+    text::Spans,
+    backend::CrosstermBackend,
+    layout::{Constraint, Direction, Layout},
+    style::{Color, Modifier, Style},
+    widgets::{Block, Borders, Tabs},
+    Terminal,
+};
 pub use colored::*;
 pub use serde::{Serialize, Deserialize};
-
 
 //files:
 mod api;
@@ -38,19 +58,11 @@ mod utils;
 // }
 
 
-use crossterm::event::{self, Event, KeyCode, EnableMouseCapture, DisableMouseCapture};
-use crossterm::terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen};
-use tui::text::Spans;
-use std::io::{self, stdout, Write};
-use tui::backend::CrosstermBackend;
-use tui::layout::{Constraint, Direction, Layout};
-use tui::style::{Color, Modifier, Style};
-use tui::widgets::{Block, Borders, Tabs};
-use tui::Terminal;
+
 
 fn handle_input(event: Event, current_tab: &mut usize, tabs_count: usize) {
-    match event {
-        Event::Key(key_event) => match key_event.code {
+    if let Event::Key(key_event) = event{
+        match key_event.code {
             KeyCode::Char('q') => *current_tab = tabs_count, // Exit the program on 'q' key
             KeyCode::Tab => {
                 // Switch to the next tab
@@ -70,8 +82,7 @@ fn handle_input(event: Event, current_tab: &mut usize, tabs_count: usize) {
             },
             // Add your own custom key mappings here
             _ => {}
-        },
-        _ => {}
+        }
     }
 }
 
