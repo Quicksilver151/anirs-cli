@@ -73,16 +73,7 @@ fn handle_input(event: Event, current_tab: &mut usize, tabs_count: usize) {
                 // Switch to the previous tab
                 *current_tab = (*current_tab + tabs_count - 1) % tabs_count;
             }
-            KeyCode::Char(y) => {
-                *current_tab = match y {
-                    'a' => 0,
-                    's' => 1,
-                    'n' => 2,
-                    'c' => 3,
-                    _ => *current_tab,
-                }
-            },
-            // Add your own custom key mappings here
+            KeyCode::Char(y) => if y.is_numeric(){*current_tab = (y.to_string().parse::<usize>().unwrap_or(1) - 1).min(tabs_count-1)},
             _ => {}
         }
     }
@@ -124,7 +115,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut terminal = Terminal::new(backend)?;
 
     // Set up the TUI application loop
-    let mut tabs = vec![("Anime",'A'), ("Search",'S'), ("Seasonal",'n'), ("Config",'C')];
+    let tabs = vec![("Anime [1]",'1'), ("Search [2]",'2'), ("Seasonal [3]",'3'), ("Config [4]",'4')];
     let mut current_tab = 0;
 
     loop {
@@ -145,6 +136,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     let start:String;
                     let c:String;
                     let rest:String;
+                    //
+                    //TODO: FIX MUTLIPLE LETTERS APPERING FOR THE TAB NAME
+                    //
                     if words.len() == 2 {
                         start = "".to_owned();
                         c = words[0].to_owned();
