@@ -2,7 +2,7 @@
 
 //stds:
 use std::io;
-use io::{stdout, Write};
+use io::stdout;
 
 //crates:
 pub use crossterm::{
@@ -40,7 +40,7 @@ mod utils;
 // use api::*;
 // use ui::*;
 // use usr::*;
-// use utils::*;
+use utils::*;
 
 
 // fn main() {
@@ -79,28 +79,6 @@ fn handle_input(event: Event, current_tab: &mut usize, tabs_count: usize) {
     }
 }
 
-fn separator(input: &str, separator: char) -> Vec<String> {
-    let mut result = Vec::new();
-    let mut current = String::new();
-
-    for c in input.chars() {
-        if c == separator {
-            if !current.is_empty() {
-                result.push(current.clone());
-                current.clear();
-            }
-            result.push(c.to_string());
-        } else {
-            current.push(c);
-        }
-    }
-
-    if !current.is_empty() {
-        result.push(current);
-    }
-
-    result
-}
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Create a terminal and enable raw mode
