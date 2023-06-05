@@ -72,7 +72,7 @@ fn handle_input(event: Event, current_tab: &mut usize, tabs_count: usize) {
             KeyCode::BackTab => {
                 // Switch to the previous tab
                 *current_tab = (*current_tab + tabs_count - 1) % tabs_count;
-            }
+            }// do not mess with this. it makes the tabs work for inputs
             KeyCode::Char(y) => if y.is_numeric(){*current_tab = (y.to_string().parse::<usize>().unwrap_or(1) - 1).min(tabs_count-1)},
             _ => {}
         }
