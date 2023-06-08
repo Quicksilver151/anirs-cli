@@ -17,7 +17,7 @@ pub use tui::{
     layout::{Constraint, Direction, Layout, Rect},
     style::{Color, Modifier, Style},
     text::{Span, Spans},
-    widgets::{Block, BorderType, Borders, List, ListItem, ListState, Paragraph, Tabs},
+    widgets::{Widget, Block, BorderType, Borders, List, ListItem, ListState, Paragraph, Tabs},
     Frame, Terminal,
 };
 
