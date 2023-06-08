@@ -168,65 +168,133 @@ impl MainLayout {
 pub fn run_app<B: Backend>( terminal: &mut Terminal<B>) -> Result<(), std::io::Error> {
     // inital draw
     terminal.draw(|f| ui(f, &mut InputMap::default()))?;
-    // Set up the TUI application loop
-    let tabs = vec![
-        ("Anime [1]", '1'),
-        ("Search [2]", '2'),
-        ("Seasonal [3]", '3'),
-        ("Config [4]", '4'),
-    ];
-    let mut current_tab = 0;
+    
 
+    
     // MAIN LOOP (@input)
     loop {
         let mut input_map = match InputMap::process_input_events(){
             Ok(im) => im,
             Err(problem) => panic!("failed to get input due to {}", problem),
         };
-       // dbg!(&input_map);
         if input_map.quit {
             return Ok(());
         }
         if input_map.back{
             dbg!(&input_map);
         }
-        current_tab = input_map.tab;
+        
         
         
         // when any tab pressed:
-        match input_map.tab {
-            1 => print!("one"),
-            2 => print!("two"),
-            _ => {}
-        };
+        // match input_map.tab {
+        //     1 => print!("one"),
+        //     2 => print!("two"),
+        //     _ => {}
+        // };
         
         terminal.draw(|f| ui(f, &mut input_map))?;
     }
 }
 
-
-// MAIN UI MANAGEMENT:
 fn ui<B: Backend>(f: &mut Frame<B>, input_map: &mut InputMap) {
-    fn new_block(title: &str) -> Block {
-        let block = Block::default()
-            .title(title)
-            .borders(Borders::ALL)
-            .border_type(BorderType::Rounded);
-        block
+    let chunks = Layout::default()
+        .direction(Direction::Vertical)
+        .margin(1)
+        .constraints([Constraint::Length(3), Constraint::Min(0)].as_ref())
+        .split(f.size());
+    
+    // RENDER TOP BAR
+    // ==============
+    let tabs = vec![
+        ("Anime [1]", '1'),
+        ("Search [2]", '2'),
+        ("Seasonal [3]", '3'),
+        ("Config [4]", '4'),
+    ];
+    
+    let tabs = tabs
+        .iter()
+        .cloned()
+        .map(|t| {
+            let words: Vec<String> = separator(t.0, t.1);
+            // dbg!(&words);
+            let start: String;
+            let c: String;
+            let rest: String;
+            //
+            //TODO: FIX MUTLIPLE LETTERS APPERING FOR THE TAB NAME
+            //
+            if words.len() == 2 {
+                start = "".to_owned();
+                c = words[0].to_owned();
+                rest = words[1].to_owned();
+            } else {
+                start = words[0].to_owned();
+                c = words[1].to_owned();
+                rest = words[2].to_owned();
+            }
+            Spans::from(vec![
+                Span::styled(start, Style::default().fg(Color::White)),
+                Span::styled(
+                    c,
+                    Style::default()
+                        .fg(Color::DarkGray)
+                        .add_modifier(Modifier::UNDERLINED)
+                        .add_modifier(Modifier::BOLD),
+                ),
+                Span::styled(rest, Style::default().fg(Color::White)),
+            ])
+        })
+        .collect();
+        
+    let current_tab = input_map.tab - input_map.tab.min(1);
+    let tabs_widget = Tabs::new(tabs)
+        .select(current_tab as usize)
+        .highlight_style(Style::default().fg(Color::DarkGray))
+        .block(Block::default().borders(Borders::ALL).title("Tabs"));
+    f.render_widget(tabs_widget, chunks[0]);
+    
+    
+    
+    // RENDER CONTENTS
+    // ===============
+    match current_tab {
+        0 => {
+            let main_widget = Paragraph::new("hello").style(Style::default().fg(Color::Cyan));
+            f.render_widget(main_widget, chunks[1]);
+        }
+        1 => {
+            // Render content for Tab 2
+        }
+        2 => {
+            // Render content for Tab 3
+        }
+        _ => {}
     }
-
-    let layouts = MainLayout::from(f, input_map.shrink);
-    let menu_block = new_block("main");
-
-    let block_1 = new_block("1");
-    let block_2 = new_block("2");
-    let block_3 = new_block("3");
-    let block_4 = new_block("4");
-
-    f.render_widget(block_1, layouts.settings[0]);
-    f.render_widget(block_2, layouts.settings[1]);
-    f.render_widget(block_3, layouts.settings[2]);
-    f.render_widget(block_4, layouts.settings[3]);
-
-    f.render_widget(menu_block, layouts.menu[0]);
 }
+// MAIN UI MANAGEMENT:
+// fn ui<B: Backend>(f: &mut Frame<B>, input_map: &mut InputMap) {
+//     fn new_block(title: &str) -> Block {
+//         let block = Block::default()
+//             .title(title)
+//             .borders(Borders::ALL)
+//             .border_type(BorderType::Rounded);
+//         block
+//     }
+//
+//     let layouts = MainLayout::from(f, input_map.shrink);
+//     let menu_block = new_block("main");
+//
+//     let block_1 = new_block("1");
+//     let block_2 = new_block("2");
+//     let block_3 = new_block("3");
+//     let block_4 = new_block("4");
+//
+//     f.render_widget(block_1, layouts.settings[0]);
+//     f.render_widget(block_2, layouts.settings[1]);
+//     f.render_widget(block_3, layouts.settings[2]);
+//     f.render_widget(block_4, layouts.settings[3]);
+//
+//     f.render_widget(menu_block, layouts.menu[0]);
+// }
