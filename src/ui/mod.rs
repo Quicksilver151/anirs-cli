@@ -1,13 +1,56 @@
 use crate::*;
 pub mod anime;
-pub mod search;
 pub mod config;
+pub mod search;
 pub mod seasonal;
+pub mod state;
 
+pub use anime::*;
+pub use state::*;
+pub use config::*;
+#[derive(Debug, Default)]
+pub struct InputMap {
+    pub rename: bool,
+    pub quit: bool,
+    pub shrink: bool,
 
+    pub next: bool,
+    pub prev: bool,
+
+    pub enter: bool,
+    pub back: bool,
+
+    pub up: bool,
+    pub down: bool,
+}
+
+pub struct MainLayout {
+    pub menu: Vec<Rect>,
+    pub settings: Vec<Rect>,
+}
+
+impl MainLayout {
+    pub fn from<B: Backend>(f: &mut Frame<B>, shrink: bool) -> MainLayout {
+        let menu: Vec<Rect> = get_anime_layout(f);
+
+        let mut container_size: Vec<f64> = vec![];
+        if shrink {
+            container_size.append(&mut vec![1.0]);
+        } else {
+            container_size.append(&mut vec![2.0]);
+        }
+        container_size.append(&mut vec![2.0]);
+        container_size.append(&mut vec![1.0]);
+        container_size.append(&mut vec![1.0]);
+
+        let settings: Vec<Rect> = get_config_layout(f, container_size);
+
+        MainLayout { menu, settings }
+    }
+}
 
 fn handle_input(event: Event, current_tab: &mut usize, tabs_count: usize) {
-    if let Event::Key(key_event) = event{
+    if let Event::Key(key_event) = event {
         match key_event.code {
             KeyCode::Char('q') => *current_tab = tabs_count, // Exit the program on 'q' key
             KeyCode::Tab => {
@@ -17,30 +60,35 @@ fn handle_input(event: Event, current_tab: &mut usize, tabs_count: usize) {
             KeyCode::BackTab => {
                 // Switch to the previous tab
                 *current_tab = (*current_tab + tabs_count - 1) % tabs_count;
-            }// do not mess with this. it makes the tabs work for inputs
-            KeyCode::Char(y) => if y.is_numeric(){*current_tab = (y.to_string().parse::<usize>().unwrap_or(1) - 1).min(tabs_count-1)},
+            } // do not mess with this. it makes the tabs work for inputs
+            KeyCode::Char(y) => {
+                if y.is_numeric() {
+                    *current_tab =
+                        (y.to_string().parse::<usize>().unwrap_or(1) - 1).min(tabs_count - 1)
+                }
+            }
             _ => {}
         }
     }
 }
 
-
 pub fn run_app() -> Result<(), Box<dyn std::error::Error>> {
     // Create a terminal and enable raw mode
     enable_raw_mode()?;
-    execute!(
-        std::io::stdout(),
-        EnterAlternateScreen,
-        EnableMouseCapture
-    )?;
+    execute!(std::io::stdout(), EnterAlternateScreen, EnableMouseCapture)?;
     let mut stdout = stdout();
     let backend = CrosstermBackend::new(&mut stdout);
     let mut terminal = Terminal::new(backend)?;
 
     // Set up the TUI application loop
-    let tabs = vec![("Anime [1]",'1'), ("Search [2]",'2'), ("Seasonal [3]",'3'), ("Config [4]",'4')];
+    let tabs = vec![
+        ("Anime [1]", '1'),
+        ("Search [2]", '2'),
+        ("Seasonal [3]", '3'),
+        ("Config [4]", '4'),
+    ];
     let mut current_tab = 0;
-
+    
     loop {
         terminal.draw(|f| {
             let chunks = Layout::default()
@@ -54,11 +102,11 @@ pub fn run_app() -> Result<(), Box<dyn std::error::Error>> {
                 .iter()
                 .cloned()
                 .map(|t| {
-                    let words:Vec<String> = separator(t.0, t.1);
+                    let words: Vec<String> = separator(t.0, t.1);
                     // dbg!(&words);
-                    let start:String;
-                    let c:String;
-                    let rest:String;
+                    let start: String;
+                    let c: String;
+                    let rest: String;
                     //
                     //TODO: FIX MUTLIPLE LETTERS APPERING FOR THE TAB NAME
                     //
@@ -66,7 +114,7 @@ pub fn run_app() -> Result<(), Box<dyn std::error::Error>> {
                         start = "".to_owned();
                         c = words[0].to_owned();
                         rest = words[1].to_owned();
-                    }else{
+                    } else {
                         start = words[0].to_owned();
                         c = words[1].to_owned();
                         rest = words[2].to_owned();
@@ -76,7 +124,7 @@ pub fn run_app() -> Result<(), Box<dyn std::error::Error>> {
                         Span::styled(
                             c,
                             Style::default()
-                                .fg(Color::Blue)
+                                .fg(Color::DarkGray)
                                 .add_modifier(Modifier::UNDERLINED)
                                 .add_modifier(Modifier::BOLD),
                         ),
@@ -84,10 +132,10 @@ pub fn run_app() -> Result<(), Box<dyn std::error::Error>> {
                     ])
                 })
                 .collect();
-                
+
             let tabs_widget = Tabs::new(tabs)
                 .select(current_tab)
-                .highlight_style(Style::default().fg(Color::Blue))
+                .highlight_style(Style::default().fg(Color::DarkGray))
                 .block(Block::default().borders(Borders::ALL).title("Tabs"));
             f.render_widget(tabs_widget, chunks[0]);
 
@@ -117,7 +165,6 @@ pub fn run_app() -> Result<(), Box<dyn std::error::Error>> {
         }
     }
 
-
     // Disable raw mode and restore the terminal state
     disable_raw_mode()?;
     execute!(
@@ -129,4 +176,59 @@ pub fn run_app() -> Result<(), Box<dyn std::error::Error>> {
 }
 
 
+// MAIN LOGIC MANAGEMENT:
+// fn run_appp<B: Backend>(
+//     terminal: &mut Terminal<B>,
+//     input_map: &mut InputMap,
+// ) -> Result<(), std::io::Error> {
+//     terminal.draw(|f| ui(f, input_map))?;
+//     loop {
+//         *input_map = InputMap::default();
+//         if let Event::Key(key) = event::read()? {
+//             match key.code {
+//                 KeyCode::Char('q') => input_map.quit = true,
+//                 KeyCode::Char('r') => input_map.rename = true,
+//
+//                 KeyCode::Right | KeyCode::Enter => input_map.enter = true,
+//                 KeyCode::Left | KeyCode::Esc => input_map.back = true,
+//
+//                 KeyCode::Up | KeyCode::BackTab => input_map.up = true,
+//                 KeyCode::Down | KeyCode::Tab => input_map.down = true,
+//
+//                 _ => {}
+//             }
+//         }
+//         // dbg!(&input_map);
+//         if input_map.quit {
+//             return Ok(());
+//         };
+//         terminal.draw(|f| ui(f, input_map))?;
+//     }
+// }
 
+
+// MAIN UI MANAGEMENT:
+fn ui<B: Backend>(f: &mut Frame<B>, input_map: &mut InputMap) {
+    fn new_block(title: &str) -> Block {
+        let block = Block::default()
+            .title(title)
+            .borders(Borders::ALL)
+            .border_type(BorderType::Rounded);
+        block
+    }
+
+    let layouts = MainLayout::from(f, input_map.shrink);
+    let menu_block = new_block("main");
+
+    let block_1 = new_block("1");
+    let block_2 = new_block("2");
+    let block_3 = new_block("3");
+    let block_4 = new_block("4");
+
+    f.render_widget(block_1, layouts.settings[0]);
+    f.render_widget(block_2, layouts.settings[1]);
+    f.render_widget(block_3, layouts.settings[2]);
+    f.render_widget(block_4, layouts.settings[3]);
+
+    f.render_widget(menu_block, layouts.menu[0]);
+}

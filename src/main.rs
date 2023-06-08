@@ -1,35 +1,25 @@
 //START
 
 //stds:
-use std::io;
 use io::stdout;
+use std::io;
 
 //crates:
-pub use crossterm::{
-    event::{self, 
-        Event, 
-        KeyCode, 
-        EnableMouseCapture, 
-        DisableMouseCapture,
-    },
-    terminal::{
-        disable_raw_mode,
-        enable_raw_mode,
-        EnterAlternateScreen,
-        LeaveAlternateScreen,
-    },
-    execute,
-};
-pub use tui::{
-    text::{Spans, Span},
-    backend::CrosstermBackend,
-    layout::{Constraint, Direction, Layout},
-    style::{Color, Modifier, Style},
-    widgets::{Block, Borders, Tabs},
-    Terminal,
-};
 pub use colored::*;
-pub use serde::{Serialize, Deserialize};
+pub use crossterm::{
+    event::{self, DisableMouseCapture, EnableMouseCapture, Event, KeyCode},
+    execute,
+    terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
+};
+pub use serde::{Deserialize, Serialize};
+pub use tui::{
+    backend::{Backend, CrosstermBackend},
+    layout::{Constraint, Direction, Layout, Rect},
+    style::{Color, Modifier, Style},
+    text::{Span, Spans},
+    widgets::{Block, BorderType, Borders, List, ListItem, ListState, Paragraph, Tabs},
+    Frame, Terminal,
+};
 
 //files:
 mod api;
@@ -41,7 +31,6 @@ mod utils;
 use ui::*;
 // use usr::*;
 use utils::*;
-
 
 fn main() {
     run_app();
@@ -59,6 +48,3 @@ fn main() {
     //tuihelp  (h) -> tui shortcuts details
     // println!(" {}","Hello, world!".blue().bold());
 }
-
-
-

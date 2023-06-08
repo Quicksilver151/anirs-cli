@@ -2,10 +2,6 @@ pub mod data;
 pub mod download;
 pub mod seasonal;
 
-
-
-
-
 // Random useful stuff:
 pub fn separator(input: &str, separator: char) -> Vec<String> {
     let mut result = Vec::new();
