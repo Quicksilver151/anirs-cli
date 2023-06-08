@@ -32,8 +32,8 @@ use ui::*;
 // use usr::*;
 use utils::*;
 
-fn main() {
-    run_app();
+// fn main() {
+    // run_appp();
     //TODO:
     //load_config()
     //get_input_flags()
@@ -47,4 +47,32 @@ fn main() {
     //config   (c) -> settings menu tui
     //tuihelp  (h) -> tui shortcuts details
     // println!(" {}","Hello, world!".blue().bold());
+// }
+
+
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    enable_raw_mode()?;
+    execute!(
+        std::io::stdout(),
+        EnterAlternateScreen,
+        EnableMouseCapture
+    )?;
+    let backend = CrosstermBackend::new(std::io::stdout());
+    let mut terminal = Terminal::new(backend)?;
+    
+    let result = run_app(&mut terminal);
+    
+    disable_raw_mode()?;
+    execute!(
+        terminal.backend_mut(),
+        LeaveAlternateScreen,
+        DisableMouseCapture,
+    )?;
+    if let Err(e) = result {
+        println!("{}", e);
+    }
+    
+    
+    Ok(())
 }
