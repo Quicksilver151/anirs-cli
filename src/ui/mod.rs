@@ -5,9 +5,6 @@ pub mod search;
 pub mod seasonal;
 pub mod state;
 
-pub use anime::*;
-pub use state::*;
-pub use config::*;
 pub use state::*;
 
 
@@ -69,7 +66,7 @@ pub fn run_app<B: Backend>( terminal: &mut Terminal<B>) -> Result<(), std::io::E
 }
 
 fn ui<B: Backend>(f: &mut Frame<B>, input_map: &mut InputMap) {
-    let chunks :Vec<Rect> = Layout::default()
+    let container :Vec<Rect> = Layout::default()
         .direction(Direction::Vertical)
         .margin(1)
         .constraints([Constraint::Length(3), Constraint::Min(0)].as_ref())
@@ -123,7 +120,7 @@ fn ui<B: Backend>(f: &mut Frame<B>, input_map: &mut InputMap) {
         .select(current_tab as usize)
         .highlight_style(Style::default().fg(Color::DarkGray))
         .block(Block::default().borders(Borders::ALL).title("Tabs"));
-    f.render_widget(tabs_widget, chunks[0]);
+    f.render_widget(tabs_widget, container[0]);
     
     
     
@@ -131,14 +128,17 @@ fn ui<B: Backend>(f: &mut Frame<B>, input_map: &mut InputMap) {
     // ===============
     match current_tab {
         0 => {
-            let anime_widget = render_anime_layout(f, chunks[1]);
-            // f.render_widget(main_widget, chunks[1]);
+            anime::render_panel(f, container[1]); // TODO: move f.render out of these functions and make it like below:
+            // f.render_widget(main_widget, container[1]);
         }
         1 => {
             // Render content for Tab 2
         }
         2 => {
             // Render content for Tab 3
+        }
+        3 => {
+            config::render_panel(f, container[1])
         }
         _ => {}
     }
