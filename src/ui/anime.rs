@@ -5,7 +5,7 @@ pub struct State{
     pub current: u32,
 }
 
-pub fn render_panel<B: Backend>(f: &mut Frame<B>, area: Rect, anime_state: &State){
+pub fn render_panel<B: Backend>(f: &mut Frame<B>, area: Rect, anime_state: &mut State){
     let chunks = Layout::default()
         .direction(Direction::Horizontal)
         .margin(0)
@@ -31,13 +31,18 @@ pub fn render_panel<B: Backend>(f: &mut Frame<B>, area: Rect, anime_state: &Stat
         "hello",
         "hello",
     ];
+    let list_count = anime_name_list.len();
     let anime_list: Vec<ListItem> = anime_name_list.into_iter().enumerate().map(
         |x| {
+            if anime_state.current as usize >= list_count {
+                anime_state.current = 0
+            }//TODO: implement backward wrap..... :I
             if x.0 == anime_state.current as usize {
                 ListItem::new(x.1).style(Style::default().bg(Color::Red))
             }else {
                 ListItem::new(x.1)
             }
+
         }
     ).collect();
    

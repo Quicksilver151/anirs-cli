@@ -137,7 +137,7 @@ fn ui<B: Backend>(f: &mut Frame<B>, app_state: &mut State) {
     // ===============
     match current_tab {
         0 => {
-            anime::render_panel(f, container[1], &app_state.anime); // TODO: move f.render out of these functions and make it like below:
+            anime::render_panel(f, container[1], &mut app_state.anime); // TODO: move f.render out of these functions and make it like below:
             // f.render_widget(main_widget, container[1]);
         }
         1 => {
