@@ -5,8 +5,32 @@ pub struct State{
     pub current: u32,
 }
 
-pub fn render_panel<B: Backend>(f: &mut Frame<B>, area: Rect, anime_state: &mut State){
-    let chunks = Layout::default()
+#[derive(Default)]
+pub struct AnimeLayout {
+    list: Vec<AnimeItem>,
+}
+#[derive(Default)]
+pub struct AnimeItem{
+    desc : AnimeInfo,
+    eps  : AnimeEps,
+}
+#[derive(Default)]
+pub struct AnimeInfo{
+    layout: Rect,
+    title : String,
+    tags : Vec<String>,
+    description: String,
+}
+#[derive(Default)]
+pub struct AnimeEps{
+    layout : Rect,
+    list : Vec<String>,
+}
+
+pub fn render_panel<B: Backend>(f: &mut Frame<B>, area: Rect, anime_state: &mut State) {
+    let anime_layout = AnimeLayout::default(); // TODO: integrate this to ui
+    
+    let chunks: Vec<Rect> = Layout::default()
         .direction(Direction::Horizontal)
         .margin(0)
         .constraints([
