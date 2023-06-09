@@ -1,5 +1,6 @@
 use crate::*;
 
+
 #[derive(Debug, Default)]
 pub struct Tab;
 
@@ -7,6 +8,7 @@ pub struct Tab;
 pub struct State {
     pub tabs: Tab,
     pub input: char,
+    pub anime: anime::State,
     pub input_map: InputMap,
 }
 impl State {

@@ -35,13 +35,15 @@ pub use state::*;
 
 // MAIN LOGIC MANAGEMENT:
 pub fn run_app<B: Backend>( terminal: &mut Terminal<B>) -> Result<(), std::io::Error> {
+
     // inital draw
-    terminal.draw(|f| ui(f, &mut InputMap::default()))?;
+    terminal.draw(|f| ui(f, &mut State::default()))?;
     
     
+    let mut app_state : State = State::default();
     // MAIN LOOP (@input)
     loop {
-        let mut input_map = match InputMap::process_input_events(){
+        let input_map = match InputMap::process_input_events(){
             Ok(im) => im,
             Err(problem) => panic!("failed to get input due to {}", problem),
         };
@@ -51,7 +53,13 @@ pub fn run_app<B: Backend>( terminal: &mut Terminal<B>) -> Result<(), std::io::E
         if input_map.back{
             dbg!(&input_map);
         }
-        
+        if input_map.up && app_state.anime.current != 0{
+            app_state.anime.current -= 1;
+        }
+        if input_map.down {
+            app_state.anime.current += 1;
+        }
+        app_state.input_map = input_map;
         
         
         // when any tab pressed:
@@ -61,11 +69,12 @@ pub fn run_app<B: Backend>( terminal: &mut Terminal<B>) -> Result<(), std::io::E
         //     _ => {}
         // };
         
-        terminal.draw(|f| ui(f, &mut input_map))?;
+        terminal.draw(|f| ui(f, &mut app_state))?;
     }
 }
 
-fn ui<B: Backend>(f: &mut Frame<B>, input_map: &mut InputMap) {
+fn ui<B: Backend>(f: &mut Frame<B>, app_state: &mut State) {
+    let input_map = &app_state.input_map;
     let container :Vec<Rect> = Layout::default()
         .direction(Direction::Vertical)
         .margin(1)
@@ -128,7 +137,7 @@ fn ui<B: Backend>(f: &mut Frame<B>, input_map: &mut InputMap) {
     // ===============
     match current_tab {
         0 => {
-            anime::render_panel(f, container[1]); // TODO: move f.render out of these functions and make it like below:
+            anime::render_panel(f, container[1], &app_state.anime); // TODO: move f.render out of these functions and make it like below:
             // f.render_widget(main_widget, container[1]);
         }
         1 => {
