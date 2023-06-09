@@ -7,6 +7,7 @@ pub struct Tab;
 pub struct State {
     pub tabs: Tab,
     pub input: char,
+    pub input_map: InputMap,
 }
 impl State {
 }
