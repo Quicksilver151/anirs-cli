@@ -8,11 +8,13 @@ pub struct State{
 #[derive(Default)]
 pub struct AnimeLayout {
     list: Vec<AnimeItem>,
+    desc: AnimeInfo,
 }
 #[derive(Default)]
 pub struct AnimeItem{
     desc : AnimeInfo,
     eps  : AnimeEps,
+    selected: bool,
 }
 #[derive(Default)]
 pub struct AnimeInfo{
