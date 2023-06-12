@@ -68,7 +68,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         x
     };
     dir_names.sort();
-    println!("{:?}",dir_names);
+    let dir_name_str :Vec<&str>= dir_names.iter().map(|x| x.to_str().unwrap()).collect();
+    dbg!(dir_name_str);
     return  Ok(());
     enable_raw_mode()?;
     execute!(
