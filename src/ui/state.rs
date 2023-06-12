@@ -2,7 +2,10 @@ use crate::*;
 
 
 #[derive(Debug, Default)]
-pub struct Tab;
+pub struct Tab{
+    pub name: String,
+    pub index: u8
+}
 
 #[derive(Debug, Default)]
 pub struct State {

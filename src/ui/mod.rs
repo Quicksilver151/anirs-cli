@@ -33,47 +33,8 @@ pub use state::*;
 //     }
 // }
 
-// MAIN LOGIC MANAGEMENT:
-pub fn run_app<B: Backend>( terminal: &mut Terminal<B>) -> Result<(), std::io::Error> {
 
-    // inital draw
-    terminal.draw(|f| ui(f, &mut State::default()))?;
-    
-    
-    let mut app_state : State = State::default();
-    // MAIN LOOP (@input)
-    loop {
-        let input_map = match InputMap::process_input_events(){
-            Ok(im) => im,
-            Err(problem) => panic!("failed to get input due to {}", problem),
-        };
-        if input_map.quit {
-            return Ok(());
-        }
-        if input_map.back{
-            dbg!(&input_map);
-        }
-        if input_map.up && app_state.anime.current != 0{
-            app_state.anime.current -= 1;
-        }
-        if input_map.down {
-            app_state.anime.current += 1;
-        }
-        app_state.input_map = input_map;
-        
-        
-        // when any tab pressed:
-        // match input_map.tab {
-        //     1 => print!("one"),
-        //     2 => print!("two"),
-        //     _ => {}
-        // };
-        
-        terminal.draw(|f| ui(f, &mut app_state))?;
-    }
-}
-
-fn ui<B: Backend>(f: &mut Frame<B>, app_state: &mut State) {
+pub fn ui<B: Backend>(f: &mut Frame<B>, app_state: &mut State) {
     let input_map = &app_state.input_map;
     let container :Vec<Rect> = Layout::default()
         .direction(Direction::Vertical)

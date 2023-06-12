@@ -70,17 +70,21 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     dir_names.sort();
     let dir_name_str :Vec<&str>= dir_names.iter().map(|x| x.to_str().unwrap()).collect();
     dbg!(dir_name_str);
-    return  Ok(());
+    // return  Ok(());
     enable_raw_mode()?;
     execute!(
         std::io::stdout(),
         EnterAlternateScreen,
         EnableMouseCapture
     )?;
+    
+    // app inits:
     let backend = CrosstermBackend::new(std::io::stdout());
     let mut terminal = Terminal::new(backend)?;
+    let mut app_state : State = State::default();
     
-    let result = run_app(&mut terminal);
+    
+    let result = run_app(&mut terminal, &mut app_state);
     
     disable_raw_mode()?;
     execute!(
@@ -94,4 +98,46 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     
     
     Ok(())
+}
+
+
+
+// MAIN LOGIC MANAGEMENT:
+fn run_app<B: Backend>( terminal: &mut Terminal<B>, app_state: &mut State) -> Result<(), std::io::Error> {
+    
+    // inital draw
+    terminal.draw(|f| ui(f, &mut State::default()))?;
+    
+    
+    app_state.tabs.index = 1;
+    // MAIN LOOP (@input)
+    loop {
+        let input_map = match InputMap::process_input_events(){
+            Ok(im) => im,
+            Err(problem) => panic!("failed to get input due to {}", problem),
+        };
+        if input_map.quit {
+            return Ok(());
+        }
+        if input_map.back{
+            dbg!(&input_map);
+        }
+        if input_map.up && app_state.anime.current != 0{
+            app_state.anime.current -= 1;
+        }
+        if input_map.down {
+            app_state.anime.current += 1;
+        }
+        app_state.input_map = input_map;
+        
+        
+        // when any tab pressed:
+        // match input_map.tab {
+        //     1 => print!("one"),
+        //     2 => print!("two"),
+        //     _ => {}
+        // };
+        
+        terminal.draw(|f| ui(f, app_state))?;
+    }
 }
