@@ -2,7 +2,7 @@
 
 //stds:
 use io::stdout;
-use std::io;
+use std::{io, fs::DirEntry};
 
 //crates:
 pub use colored::*;
@@ -52,6 +52,24 @@ use utils::*;
 
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
+    //code for reading file names:
+    // std::fs::read_dir
+    // let mut x = std::fs::read_dir("/home/renderinguser/Videos/Anime/").unwrap().map(|res| res.map(|e| e.file_name())).collect::<Result<Vec<_>, std::io::Error>>().unwrap();
+    // x.sort();
+    // println!("{:?}",x);
+    let dirs = std::path::Path::read_dir(std::path::Path::new("/home/renderinguser/Videos/Anime/")).expect("Read all files").map(|x|x.unwrap());
+    let mut dir_names = {
+        let mut x = vec![];
+        for entry in dirs{
+            if DirEntry::path(&entry).is_dir(){
+                x.append(&mut vec![entry.file_name()]);
+            }
+        }
+        x
+    };
+    dir_names.sort();
+    println!("{:?}",dir_names);
+    return  Ok(());
     enable_raw_mode()?;
     execute!(
         std::io::stdout(),
