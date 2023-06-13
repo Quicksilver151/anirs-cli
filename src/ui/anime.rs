@@ -3,6 +3,7 @@ use crate::*;
 #[derive(Debug, Default)]
 pub struct State{
     pub current: u32,
+    pub list: Vec<String>,
 }
 
 #[derive(Default)]
@@ -41,22 +42,8 @@ pub fn render_panel<B: Backend>(f: &mut Frame<B>, area: Rect, anime_state: &mut 
                      Constraint::Percentage(50),
         ])
         .split(area);
-    let anime_name_list :Vec<&str> = vec![
-        "hello",
-        "h1llo",
-        "heaaallo",
-        "3ello",
-        "hello",
-        "hello",
-        "hello",
-        "hello",
-        "hello",
-        "hello",
-        "hello",
-        "hello",
-        "hello",
-        "hello",
-    ];
+    let anime_name_list : Vec<String> = anime_state.list.clone();
+
     let list_count = anime_name_list.len();
     let anime_list: Vec<ListItem> = anime_name_list.into_iter().enumerate().map(
         |x| {

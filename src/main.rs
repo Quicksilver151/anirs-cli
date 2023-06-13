@@ -68,8 +68,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         x
     };
     dir_names.sort();
-    let dir_name_str :Vec<&str>= dir_names.iter().map(|x| x.to_str().unwrap()).collect();
-    dbg!(dir_name_str);
+    let dir_name_str :Vec<String> = dir_names.iter().map(|x| x.to_str().unwrap().to_string()).collect();
+    dbg!(&dir_name_str);
     // return  Ok(());
     enable_raw_mode()?;
     execute!(
@@ -82,8 +82,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let backend = CrosstermBackend::new(std::io::stdout());
     let mut terminal = Terminal::new(backend)?;
     let mut app_state : State = State::default();
+    app_state.anime.list = dir_name_str;
     
-    
+    // RUNNNNNNN
     let result = run_app(&mut terminal, &mut app_state);
     
     disable_raw_mode()?;
