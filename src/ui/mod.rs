@@ -34,7 +34,7 @@ pub use state::*;
 // }
 
 
-pub fn ui<B: Backend>(f: &mut Frame<B>, app_state: &mut State) {
+pub fn ui<B: Backend>(f: &mut Frame<B>, app_state: &mut AppState) {
     let input_map = &app_state.input_map;
     let container :Vec<Rect> = Layout::default()
         .direction(Direction::Vertical)

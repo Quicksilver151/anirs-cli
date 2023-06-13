@@ -1,7 +1,7 @@
 use crate::*;
 
 #[derive(Debug, Default)]
-pub struct State{
+pub struct AnimeState{
     pub current: u32,
     pub list: Vec<String>,
 }
@@ -30,7 +30,7 @@ pub struct AnimeEps{
     list : Vec<String>,
 }
 
-pub fn render_panel<B: Backend>(f: &mut Frame<B>, area: Rect, anime_state: &mut State) {
+pub fn render_panel<B: Backend>(f: &mut Frame<B>, area: Rect, anime_state: &mut AnimeState) {
     let anime_layout = AnimeLayout::default(); // TODO: integrate this to ui
     
     let chunks: Vec<Rect> = Layout::default()
@@ -43,7 +43,6 @@ pub fn render_panel<B: Backend>(f: &mut Frame<B>, area: Rect, anime_state: &mut 
         ])
         .split(area);
     let anime_name_list : Vec<String> = anime_state.list.clone();
-
     let list_count = anime_name_list.len();
     let anime_list: Vec<ListItem> = anime_name_list.into_iter().enumerate().map(
         |x| {

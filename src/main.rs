@@ -81,7 +81,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     // app inits:
     let backend = CrosstermBackend::new(std::io::stdout());
     let mut terminal = Terminal::new(backend)?;
-    let mut app_state : State = State::default();
+    let mut app_state : AppState = AppState::default();
     app_state.anime.list = dir_name_str;
     
     // RUNNNNNNN
@@ -104,10 +104,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
 
 // MAIN LOGIC MANAGEMENT:
-fn run_app<B: Backend>( terminal: &mut Terminal<B>, app_state: &mut State) -> Result<(), std::io::Error> {
+fn run_app<B: Backend>( terminal: &mut Terminal<B>, app_state: &mut AppState) -> Result<(), std::io::Error> {
     
     // inital draw
-    terminal.draw(|f| ui(f, &mut State::default()))?;
+    terminal.draw(|f| ui(f, app_state))?;
     
     
     app_state.tabs.index = 1;

@@ -8,13 +8,13 @@ pub struct Tab{
 }
 
 #[derive(Debug, Default)]
-pub struct State {
+pub struct AppState {
     pub tabs: Tab,
     pub input: char,
-    pub anime: anime::State,
+    pub anime: anime::AnimeState,
     pub input_map: InputMap,
 }
-impl State {
+impl AppState {
 }
 
 #[derive(Debug, Default)]
