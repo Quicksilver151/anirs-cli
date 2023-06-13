@@ -45,7 +45,7 @@ use crate::ui::anime::AnimeState;
     //(allow swithing different tabs for each:)
     //anime    (1) -> browse downloaded anime tui (default screen)
     //search   (2) -> browse anime online
-    //seasonal (3) -> seasonal anime update tui
+    //updates  (3) -> anime update ui
     //ranks    (4) -> ranking system?
     //config   (c) -> settings menu tui
     //tuihelp  (h) -> tui shortcuts details

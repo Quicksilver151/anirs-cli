@@ -50,7 +50,7 @@ pub fn render_panel<B: Backend>(f: &mut Frame<B>, area: Rect, anime_state: &mut 
                 anime_state.current = 0
             }//TODO: implement backward wrap..... :I
             if x.0 == anime_state.current as usize {
-                ListItem::new(x.1).style(Style::default().bg(Color::Red))
+                ListItem::new(x.1).style(Style::default().bg(Color::Red).add_modifier(Modifier::BOLD))
             }else {
                 ListItem::new(x.1)
             }

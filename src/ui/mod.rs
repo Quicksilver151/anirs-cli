@@ -47,7 +47,7 @@ pub fn ui<B: Backend>(f: &mut Frame<B>, app_state: &mut AppState) {
     let tabs_vec = vec![
         ("Anime [1]", '1'),
         ("Search [2]", '2'),
-        ("Seasonal [3]", '3'),
+        ("Updates [3]", '3'),
         ("Config [4]", '4'),
     ];
     
@@ -88,7 +88,7 @@ pub fn ui<B: Backend>(f: &mut Frame<B>, app_state: &mut AppState) {
     
     let tabs_widget = Tabs::new(tabs)
         .select(current_tab as usize)
-        .highlight_style(Style::default().fg(Color::DarkGray))
+        .highlight_style(Style::default().fg(Color::Blue))
         .block(Block::default().borders(Borders::ALL).title("Tabs"));
     f.render_widget(tabs_widget, container[0]);
     
