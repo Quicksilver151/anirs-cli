@@ -32,6 +32,9 @@ use ui::*;
 // use usr::*;
 use utils::*;
 
+use crate::ui::anime::AnimeState;
+
+
 // fn main() {
     // run_appp();
     //TODO:
@@ -57,19 +60,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     // let mut x = std::fs::read_dir("/home/renderinguser/Videos/Anime/").unwrap().map(|res| res.map(|e| e.file_name())).collect::<Result<Vec<_>, std::io::Error>>().unwrap();
     // x.sort();
     // println!("{:?}",x);
-    let dirs = std::path::Path::read_dir(std::path::Path::new("/home/renderinguser/Videos/Anime/")).expect("Read all files").map(|x|x.unwrap());
-    let mut dir_names = {
-        let mut x = vec![];
-        for entry in dirs{
-            if DirEntry::path(&entry).is_dir(){
-                x.append(&mut vec![entry.file_name()]);
-            }
-        }
-        x
-    };
-    dir_names.sort();
-    let dir_name_str :Vec<String> = dir_names.iter().map(|x| x.to_str().unwrap().to_string()).collect();
-    dbg!(&dir_name_str);
+    // TODO: Proper error handling for file reading
+    let folders = get_anime_folder_contents();
+    dbg!(&folders);
     // return  Ok(());
     enable_raw_mode()?;
     execute!(
@@ -82,7 +75,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let backend = CrosstermBackend::new(std::io::stdout());
     let mut terminal = Terminal::new(backend)?;
     let mut app_state : AppState = AppState::default();
-    app_state.anime.list = dir_name_str;
+    app_state.anime.list = folders.anime.iter().map(|x| x.title.clone()).collect();
+
     
     // RUNNNNNNN
     let result = run_app(&mut terminal, &mut app_state);

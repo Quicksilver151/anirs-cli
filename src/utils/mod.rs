@@ -1,6 +1,10 @@
 pub mod data;
 pub mod download;
 pub mod seasonal;
+pub use data::*;
+pub use download::*;
+pub use seasonal::*;
+
 
 // Random useful stuff:
 pub fn separator(input: &str, separator: char) -> Vec<String> {
