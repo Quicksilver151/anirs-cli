@@ -1,9 +1,9 @@
 pub mod data;
 pub mod download;
-pub mod seasonal;
+pub mod updates;
 pub use data::*;
 pub use download::*;
-pub use seasonal::*;
+pub use updates::*;
 
 
 // Random useful stuff:

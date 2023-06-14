@@ -6,6 +6,7 @@ use std::{io, fs::DirEntry};
 
 //crates:
 pub use colored::*;
+pub use directories::*;
 pub use crossterm::{
     event::{self, DisableMouseCapture, EnableMouseCapture, Event, KeyCode},
     execute,
@@ -32,7 +33,6 @@ use ui::*;
 // use usr::*;
 use utils::*;
 
-use crate::ui::anime::AnimeState;
 
 
 // fn main() {
