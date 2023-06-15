@@ -48,6 +48,12 @@ a WIP tool to get free anime or smthn
 
 - [ ] Improve the README.md with basic description + images/videos
 
+- [ ] Add a section for manga
+
 - [ ] publish to `crates.io`
 
 - [ ] release version `v1.0.0`
+
+- [ ] custom website scraping?
+
+- [ ] release `v2.0.0`
