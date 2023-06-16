@@ -30,7 +30,7 @@ mod utils;
 //--------
 // use api::*;
 use ui::*;
-// use usr::*;
+use usr::*;
 use utils::*;
 
 
@@ -61,6 +61,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     // x.sort();
     // println!("{:?}",x);
     // TODO: Proper error handling for file reading
+    usr::store_config();
+    let config = Config::load();
+    dbg!(config);
     let folders = get_anime_folder_contents();
     dbg!(&folders);
     // return  Ok(());
@@ -70,6 +73,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         EnterAlternateScreen,
         EnableMouseCapture
     )?;
+    
     
     // app inits:
     let backend = CrosstermBackend::new(std::io::stdout());
