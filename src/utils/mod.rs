@@ -1,8 +1,8 @@
 pub mod data;
-pub mod download;
+pub mod files;
 pub mod updates;
 pub use data::*;
-pub use download::*;
+pub use files::*;
 pub use updates::*;
 
 // Random useful stuff:

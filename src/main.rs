@@ -52,23 +52,24 @@ use utils::*;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     // TODO: Proper error handling for file reading
-
+    
     // data load
     let config  = usr::load_config();
-    let usr_dat = usr::load_usr_data();
-    // dbg!(usr_dat);
+    let usr_dat = usr::load_usr_data().unwrap();
+    
+    dbg!(config, usr_dat);
     
     let folders = get_anime_folder_contents();
     // dbg!(&folders);
     // return  Ok(());
     enable_raw_mode()?;
     execute!(std::io::stdout(), EnterAlternateScreen, EnableMouseCapture)?;
-
+    
     // app inits:
     let backend = CrosstermBackend::new(std::io::stdout());
     let mut terminal = Terminal::new(backend)?;
     let mut app_state: AppState = AppState::default();
-    app_state.anime.list = folders.anime.iter().map(|x| x.title.clone()).collect();
+    app_state.anime.list = folders.anime_list;
     
     // RUNNNNNNN
     let result = run_app(&mut terminal, &mut app_state);
