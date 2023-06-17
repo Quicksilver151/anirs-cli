@@ -5,7 +5,6 @@ pub use data::*;
 pub use download::*;
 pub use updates::*;
 
-
 // Random useful stuff:
 pub fn separator(input: &str, separator: char) -> Vec<String> {
     let mut result = Vec::new();

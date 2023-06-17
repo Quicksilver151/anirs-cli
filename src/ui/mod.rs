@@ -7,7 +7,6 @@ pub mod state;
 
 pub use state::*;
 
-
 // pub struct MainLayout {
 //     pub menu: Vec<Rect>,
 //     pub settings: Vec<Rect>,
@@ -33,15 +32,14 @@ pub use state::*;
 //     }
 // }
 
-
 pub fn ui<B: Backend>(f: &mut Frame<B>, app_state: &mut AppState) {
     let input_map = &app_state.input_map;
-    let container :Vec<Rect> = Layout::default()
+    let container: Vec<Rect> = Layout::default()
         .direction(Direction::Vertical)
         .margin(1)
         .constraints([Constraint::Length(3), Constraint::Min(0)].as_ref())
         .split(f.size());
-    
+
     // RENDER TOP BAR
     // ==============
     let tabs_vec = vec![
@@ -50,8 +48,10 @@ pub fn ui<B: Backend>(f: &mut Frame<B>, app_state: &mut AppState) {
         ("Updates [3]", '3'),
         ("Config [4]", '4'),
     ];
-    
-    let tabs = tabs_vec.iter().cloned()
+
+    let tabs = tabs_vec
+        .iter()
+        .cloned()
         .map(|t| {
             let text: Vec<String> = separator(t.0, t.1);
             // dbg!(&text);
@@ -83,17 +83,15 @@ pub fn ui<B: Backend>(f: &mut Frame<B>, app_state: &mut AppState) {
             ])
         })
         .collect();
-        
+
     let current_tab = (input_map.tab - input_map.tab.min(1)).min(tabs_vec.len() as u8 - 1); // dont mess with this math
-    
+
     let tabs_widget = Tabs::new(tabs)
         .select(current_tab as usize)
         .highlight_style(Style::default().fg(Color::Blue))
         .block(Block::default().borders(Borders::ALL).title("Tabs"));
     f.render_widget(tabs_widget, container[0]);
-    
-    
-    
+
     // RENDER CONTENTS
     // ===============
     match current_tab {
@@ -107,9 +105,8 @@ pub fn ui<B: Backend>(f: &mut Frame<B>, app_state: &mut AppState) {
         2 => {
             // Render content for Tab 3
         }
-        3 => {
-            config::render_panel(f, container[1])
-        }
+        3 => config::render_panel(f, container[1]),
+        
         _ => {}
     }
 }

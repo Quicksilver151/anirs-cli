@@ -1,10 +1,9 @@
 use crate::*;
 
-
 #[derive(Debug, Default)]
-pub struct Tab{
+pub struct Tab {
     pub name: String,
-    pub index: u8
+    pub index: u8,
 }
 
 #[derive(Debug, Default)]
@@ -14,8 +13,7 @@ pub struct AppState {
     pub anime: anime::AnimeState,
     pub input_map: InputMap,
 }
-impl AppState {
-}
+impl AppState {}
 
 #[derive(Debug, Default)]
 pub struct InputMap {
@@ -34,38 +32,34 @@ pub struct InputMap {
 
     pub tab: u8,
     pub charachter: char,
-
 }
 impl InputMap {
     // Mutates the value
-    pub fn process_input_events() -> Result<InputMap, std::io::Error>{
+    pub fn process_input_events() -> Result<InputMap, std::io::Error> {
         let mut input_map = InputMap::default();
         if let Event::Key(key) = event::read()? {
             match key.code {
                 KeyCode::Char('q') => input_map.quit = true,
                 KeyCode::Char('r') => input_map.rename = true,
-                
+
                 KeyCode::Char(x) => {
                     if x.is_numeric() {
                         input_map.tab = x.to_digit(10).unwrap() as u8;
-                    }else{
+                    } else {
                         input_map.charachter = x;
                     }
-                },
-                
+                }
+
                 KeyCode::Right | KeyCode::Enter => input_map.enter = true,
                 KeyCode::Left | KeyCode::Esc => input_map.back = true,
-                
+
                 KeyCode::Up | KeyCode::BackTab => input_map.up = true,
                 KeyCode::Down | KeyCode::Tab => input_map.down = true,
-                
+
                 _ => {}
             }
         }
-        
+
         Ok(input_map)
-        
     }
 }
-
-
