@@ -1,8 +1,7 @@
 //START
 
 //stds:
-use io::stdout;
-use std::{fs::DirEntry, io};
+use std::{fs, path, io};
 
 //crates:
 pub use colored::*;
@@ -47,7 +46,6 @@ use utils::*;
 //ranks    (4) -> ranking system?
 //config   (c) -> settings menu tui
 //tuihelp  (h) -> tui shortcuts details
-// println!(" {}","Hello, world!".blue().bold());
 // }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {

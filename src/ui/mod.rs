@@ -44,7 +44,7 @@ pub fn ui<B: Backend>(f: &mut Frame<B>, app_state: &mut AppState) {
     // ==============
     let tabs_vec = vec![
         ("Anime [1]", '1'),
-        ("Search [2]", '2'),
+        ("Manga [2]", '2'),
         ("Updates [3]", '3'),
         ("Config [4]", '4'),
     ];

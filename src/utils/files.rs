@@ -18,7 +18,7 @@ pub struct DownloadsFolders {
 
 pub fn read_desc(path: &mut std::path::PathBuf) -> String {
     path.push(".desc");
-    std::fs::read_to_string(path).unwrap_or("no description found in {path}".to_string())
+    std::fs::read_to_string(&path).unwrap_or(format!("no description found in:\n{}", path.clone().to_str().unwrap()))
 }
 
 pub fn get_anime_folder_contents() -> DownloadsFolders {
@@ -28,7 +28,7 @@ pub fn get_anime_folder_contents() -> DownloadsFolders {
     
     let mut folders: Vec<std::path::PathBuf> = vec![];
     for entry in dirs {
-        if DirEntry::path(&entry).is_dir() {
+        if fs::DirEntry::path(&entry).is_dir() {
             folders.append(&mut vec![entry.path()]);
         }
     }
